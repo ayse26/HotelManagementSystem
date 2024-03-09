@@ -2,8 +2,12 @@ package com.tpe.hotelManagementSystem.controller;
 
 import com.tpe.hotelManagementSystem.repository.HotelRepository;
 import com.tpe.hotelManagementSystem.repository.HotelRepositoryImpl;
+import com.tpe.hotelManagementSystem.repository.RoomRepository;
+import com.tpe.hotelManagementSystem.repository.RoomRepositoryImp;
 import com.tpe.hotelManagementSystem.service.HotelService;
 import com.tpe.hotelManagementSystem.service.HotelServiceImpl;
+import com.tpe.hotelManagementSystem.service.RoomService;
+import com.tpe.hotelManagementSystem.service.RoomServiceImpl;
 
 import java.util.Scanner;
 
@@ -51,7 +55,6 @@ public class HotelManagementSystem {
                     System.out.println("Invalid choice. Please try again");
                     break;
             }
-
 
         }
 
@@ -113,6 +116,10 @@ public class HotelManagementSystem {
     private static void displayRoomOperationsMenu(){
         System.out.println("RoomOperationMenu"); //Step 14
         scanner = new Scanner(System.in);  //Step 15
+
+        RoomRepository roomRepository=new RoomRepositoryImp();
+        RoomService roomService=new RoomServiceImpl(roomRepository);
+
         boolean exit = false;
         while (!exit) {
             System.out.println("==== Room Operations ====");
@@ -129,6 +136,7 @@ public class HotelManagementSystem {
                 case 1:
                     //saveRoom
                     System.out.println("==== Add a new room ====");
+                    roomService.save();
                     break;
                 case 2:
                     //findRoomById

@@ -16,11 +16,11 @@ public class HibernateUtils {
             Configuration configuration=new Configuration().
                     configure("hibernate.cfg.xml");
                    // addAnnotatedClass(Hotel.class).addAnnotatedClass(Room.class);  //bunu ekleme gerek yok artik.Cunku
-                                                                                     // hibernate.cfg.xml de ekledik bunu(Mapping entty classes)
+                                                                                     // hibernate.cfg.xml de ekledik bunu(Mapping entity classes)
             sessionFactory=configuration.buildSessionFactory();      //konfigurasyon dosyamizdan sessionFactory olusturduk
 
         }catch (Throwable ex){
-            System.err.println("Initial SessionFactory is failed." +ex); //err:hatanin kirmizi renkte yazilmasini sagliyor
+            System.err.println("Initial SessionFactory is failed." +ex);   // err: hatanin kirmizi renkte yazilmasini sagliyor
             throw new ExceptionInInitializerError(ex);        //bunu yazmasakta olur
         }
     }
@@ -46,3 +46,14 @@ public class HibernateUtils {
 }
 
 //Uygulama ayaga kalkar kalkmaz islemesini istedigimiz icin static seciyoruz,degismesin hepsini bunu kullansin diye de final
+
+
+/*
+
+"util" Java'da "utility" (yardımcı) kısaltmasıdır. "util" paketleri, genellikle sık kullanılan yardımcı sınıfları
+ve işlevleri içerir.Java'da, standart kütüphane olan Java API'sinde (Application Programming Interface - Uygulama Programlama Arayüzü)
+java.util paketi, genel amaçlı yardımcı sınıfları içerir. Bu paket, koleksiyonlar (Listeler, Setler, Haritalar), zaman işlemleri,
+rastgele sayı üretimi gibi çeşitli işlevleri içerir. Bu nedenle, birçok Java programı, java.util paketindeki sınıfları ve işlevleri
+kullanarak farklı görevleri gerçekleştirir.
+
+ */
