@@ -43,6 +43,8 @@
         <!-- Mapping entity classes -->
         <mapping class="com.tpe.hotelManagementSystem.domain.Hotel" />
         <mapping class="com.tpe.hotelManagementSystem.domain.Room" />
+        <mapping class="com.tpe.hotelManagementSystem.domain.Guest" />
+        <mapping class="com.tpe.hotelManagementSystem.domain.Address" />
 
 
 

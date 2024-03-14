@@ -1,9 +1,10 @@
 package com.tpe.hotelManagementSystem.service;
 
 import com.tpe.hotelManagementSystem.domain.Hotel;
+import com.tpe.hotelManagementSystem.exception.HotelResourceNotFoundException;
 import com.tpe.hotelManagementSystem.repository.HotelRepository;
-import com.tpe.hotelManagementSystem.repository.HotelRepositoryImpl;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class HotelServiceImpl implements HotelService{
@@ -39,4 +40,68 @@ public class HotelServiceImpl implements HotelService{
         return hotel;
 
     }
+
+    @Override
+    public Hotel findHotelById(Long id) {
+        try {
+            Hotel foundHotel = hotelRepository.findHotelById(id);
+            if (foundHotel!=null){
+                System.out.println("----------------------------------");
+                System.out.println(foundHotel);
+                return foundHotel;
+            }else {
+                throw new HotelResourceNotFoundException("Hotel not found with id : " + id);
+            }
+        }catch (HotelResourceNotFoundException e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public void deleteHotelById(Long id) {
+
+        scanner=new Scanner(System.in);
+        Hotel hotelDelete=hotelRepository.findHotelById(id);
+        if (hotelDelete==null){
+            throw new HotelResourceNotFoundException("Hotel not found with id : " + id);
+        }
+            System.out.println(hotelDelete);
+            System.out.println("Are you sure you want to delete hotel with id: " + id + " Please answer with Y or N");
+            String confirmation=scanner.nextLine();
+            if (confirmation.equalsIgnoreCase("Y")){
+                hotelRepository.deleteHotelById(hotelDelete.getId());
+                System.out.println("Hotel is deleted successfully...");
+            }else {
+                System.out.println("Delete operation cancelled...");
+            }
+        }
+
+    @Override
+    public List<Hotel> findAllHotels() {
+
+        try {
+            List<Hotel> hotels = hotelRepository.findAllHotels();
+            if (!hotels.isEmpty()){
+                System.out.println("List of hotels : ");
+               // hotels.forEach(t-> System.out.println(t));
+                for (Hotel hotel : hotels) {
+                    System.out.println(hotel);
+                    System.out.println("*------------------------------------------*");
+                }
+            }else {
+                //throw new HotelResourceNotFoundException("Hotel list is empty");
+                System.out.println("Hotel list is empty.");
+            }
+        } catch (Exception e) {
+        System.out.println("An error occurred while retrieving hotels " + e.getMessage());
+    }
+        return null;
+
+    }
+
+
 }
+
+
+

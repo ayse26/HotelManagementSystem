@@ -1,14 +1,10 @@
 package com.tpe.hotelManagementSystem.controller;
 
-import com.tpe.hotelManagementSystem.repository.HotelRepository;
-import com.tpe.hotelManagementSystem.repository.HotelRepositoryImpl;
-import com.tpe.hotelManagementSystem.repository.RoomRepository;
-import com.tpe.hotelManagementSystem.repository.RoomRepositoryImp;
-import com.tpe.hotelManagementSystem.service.HotelService;
-import com.tpe.hotelManagementSystem.service.HotelServiceImpl;
-import com.tpe.hotelManagementSystem.service.RoomService;
-import com.tpe.hotelManagementSystem.service.RoomServiceImpl;
+import com.tpe.hotelManagementSystem.domain.Hotel;
+import com.tpe.hotelManagementSystem.repository.*;
+import com.tpe.hotelManagementSystem.service.*;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class HotelManagementSystem {
@@ -21,6 +17,12 @@ public class HotelManagementSystem {
 
         HotelRepository hotelRepository=new HotelRepositoryImpl();
         HotelService hotelService=new HotelServiceImpl(hotelRepository);
+
+        RoomRepository roomRepository=new RoomRepositoryImp();
+        RoomService roomService=new RoomServiceImpl(roomRepository,hotelRepository);
+
+        GuestRepository guestRepository=new GuestRepositoryImpl();
+        GuestService guestService=new GuestServiceImpl(guestRepository);
 
         boolean exit=false;
         while (!exit){
@@ -39,10 +41,10 @@ public class HotelManagementSystem {
                     displayHotelOperationsMenu(hotelService);
                     break;
                 case 2:
-                    displayRoomOperationsMenu();
+                    displayRoomOperationsMenu(roomService);
                     break;
                 case 3:
-                    displayGuestOperationsMenu();
+                    displayGuestOperationsMenu(guestService);
                     break;
                 case 4:
                     displayReservationOperationsMenu();
@@ -86,20 +88,23 @@ public class HotelManagementSystem {
                     //findHotelById
                     System.out.println("Enter the hotel ID: ");
                     Long hotelId = scanner.nextLong();
+                    hotelService.findHotelById(hotelId);
                     break;
                 case 3:
                     //deleteHotelById
                     System.out.println("Enter the hotel ID to delete: ");
                     Long id = scanner.nextLong();
-                    break;
+                    hotelService.deleteHotelById(id);
+                    break;            //fk constraint old icin silmiyor,hata veriyor
                 case 4:
                     //findAllHotels
                     System.out.println("==== Find All Hotels ====");
+                    List<Hotel> hotelList=hotelService.findAllHotels();
                     break;
                 case 5:
                     //updateHotelById
                     System.out.println("==== Update Hotel By ID ====");
-                    System.out.println("Enter the hotel ID to update: ");
+                    System.out.print("Enter the hotel ID to update: ");
                     Long hotelId1 = scanner.nextLong();
                     scanner.nextLine(); // Consume the newline character
                     break;
@@ -113,12 +118,9 @@ public class HotelManagementSystem {
         }
     }
 
-    private static void displayRoomOperationsMenu(){
+    private static void displayRoomOperationsMenu(RoomService roomService){
         System.out.println("RoomOperationMenu"); //Step 14
         scanner = new Scanner(System.in);  //Step 15
-
-        RoomRepository roomRepository=new RoomRepositoryImp();
-        RoomService roomService=new RoomServiceImpl(roomRepository);
 
         boolean exit = false;
         while (!exit) {
@@ -136,21 +138,24 @@ public class HotelManagementSystem {
                 case 1:
                     //saveRoom
                     System.out.println("==== Add a new room ====");
-                    roomService.save();
+                    roomService.saveRoom();
                     break;
                 case 2:
                     //findRoomById
                     System.out.println("Enter the room ID to find : ");
                     Long roomId = scanner.nextLong();
+                    roomService.findRoomById(roomId);
                     break;
                 case 3:
                     //deleteRoomById
                     System.out.println("Enter the room ID to delete: ");
                     Long id = scanner.nextLong();
+                    roomService.deleteRoomById(id);
                     break;
                 case 4:
                     //findAllRooms
                     System.out.println("==== Find All Rooms ====");
+                    roomService.findAllRooms();
                     break;
                 case 5:
                     exit=true;
@@ -162,7 +167,7 @@ public class HotelManagementSystem {
         }
     }
 
-    private static void displayGuestOperationsMenu() {
+    private static void displayGuestOperationsMenu(GuestService guestService) {
         System.out.println("GuestOperationMenu"); //Step 14
         scanner = new Scanner(System.in);  //Step 15
         boolean exit = false;
@@ -181,6 +186,7 @@ public class HotelManagementSystem {
                 case 1:
                     //saveGuest
                     System.out.println("==== Add a new guest ====");
+                    guestService.saveGuest();
                     break;
                 case 2:
                     //findGuestById
