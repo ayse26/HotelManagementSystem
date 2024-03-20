@@ -1,6 +1,8 @@
 package com.tpe.hotelManagementSystem.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "t_rooms")
@@ -18,6 +20,12 @@ public class Room {
     @JoinColumn(name="hotel_id",nullable = false)
     private Hotel hotel;
 
+
+    @OneToMany(mappedBy = "room",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
+    private List<Reservation> reservations=new ArrayList<>();
+
+
+
     public Room() {
     }
 
@@ -26,6 +34,14 @@ public class Room {
         this.number = number;
         this.capacity = capacity;
         this.hotel = hotel;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
     }
 
     public Long getId() {
@@ -60,13 +76,17 @@ public class Room {
         this.hotel = hotel;
     }
 
+
     @Override
     public String toString() {
         return "Room{" +
                 "id=" + id +
                 ", number='" + number + '\'' +
                 ", capacity=" + capacity +
- //               ", hotel=" + hotel +                       stack over flower olur alırsak
+//              ", hotel=" + hotel +                       stack over flower olur alırsak
+//              ", reservations=" + reservations +
                 '}';
     }
+
+
 }

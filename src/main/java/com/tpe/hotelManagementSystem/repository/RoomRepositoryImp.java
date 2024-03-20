@@ -46,10 +46,10 @@ public class RoomRepositoryImp implements RoomRepository{
 
             Room deleteRoom=session.get(Room.class,id);
             if (deleteRoom!=null){
-                // hotel listesinden room u kaldırmak gerek
+                // hotel listesinden room u kaldırmak gerek               //otelleri odalara islemistik,iliskiyi kesmek lazim
                 Hotel hotel=deleteRoom.getHotel();
                 if (hotel!=null){
-                    hotel.getRooms().remove(deleteRoom);
+                    hotel.getRooms().remove(deleteRoom);            //eger hotel de bu oda varsa hotel listesinde kaldir dedik
                 }
                 // Oda silme islemi
                 session.delete(deleteRoom);

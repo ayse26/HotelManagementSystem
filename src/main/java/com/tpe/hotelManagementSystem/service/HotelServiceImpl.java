@@ -100,6 +100,22 @@ public class HotelServiceImpl implements HotelService{
 
     }
 
+    @Override
+    public void updateHotel(Long id, Hotel updateHotel) {
+        try {
+            Hotel existingHotel=hotelRepository.findHotelById(id);
+            if (existingHotel==null){
+                throw new HotelResourceNotFoundException("Hotel not found...");
+            }
+            existingHotel.setName(updateHotel.getName());
+            existingHotel.setLocation(updateHotel.getLocation());
+
+            hotelRepository.updateHotel(existingHotel);
+        }catch (HotelResourceNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
 
 }
 

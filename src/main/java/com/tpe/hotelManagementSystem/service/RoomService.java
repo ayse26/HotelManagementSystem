@@ -12,4 +12,5 @@ public interface RoomService {
     List<Room> findAllRooms();
 
     void deleteRoomById(Long id);
+
 }

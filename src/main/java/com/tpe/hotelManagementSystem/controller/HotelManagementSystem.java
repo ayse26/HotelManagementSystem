@@ -1,6 +1,7 @@
 package com.tpe.hotelManagementSystem.controller;
 
 import com.tpe.hotelManagementSystem.domain.Hotel;
+import com.tpe.hotelManagementSystem.exception.HotelResourceNotFoundException;
 import com.tpe.hotelManagementSystem.repository.*;
 import com.tpe.hotelManagementSystem.service.*;
 
@@ -23,6 +24,9 @@ public class HotelManagementSystem {
 
         GuestRepository guestRepository=new GuestRepositoryImpl();
         GuestService guestService=new GuestServiceImpl(guestRepository);
+
+        ReservationRepository reservationRepository=new ReservationRepositoryImpl();
+        ReservationService reservationService=new ReservationServiceImpl(reservationRepository,guestRepository,roomRepository);
 
         boolean exit=false;
         while (!exit){
@@ -47,7 +51,7 @@ public class HotelManagementSystem {
                     displayGuestOperationsMenu(guestService);
                     break;
                 case 4:
-                    displayReservationOperationsMenu();
+                    displayReservationOperationsMenu(reservationService);
                     break;
                 case 5:
                     exit=true;
@@ -86,13 +90,13 @@ public class HotelManagementSystem {
                     break;
                 case 2:
                     //findHotelById
-                    System.out.println("Enter the hotel ID: ");
+                    System.out.print("Enter the hotel ID: ");
                     Long hotelId = scanner.nextLong();
                     hotelService.findHotelById(hotelId);
                     break;
                 case 3:
                     //deleteHotelById
-                    System.out.println("Enter the hotel ID to delete: ");
+                    System.out.print("Enter the hotel ID to delete: ");
                     Long id = scanner.nextLong();
                     hotelService.deleteHotelById(id);
                     break;            //fk constraint old icin silmiyor,hata veriyor
@@ -107,6 +111,19 @@ public class HotelManagementSystem {
                     System.out.print("Enter the hotel ID to update: ");
                     Long hotelId1 = scanner.nextLong();
                     scanner.nextLine(); // Consume the newline character
+                    try {
+                        System.out.print("Enter the updated hotel name: ");
+                        String name= scanner.nextLine();
+                        System.out.print("Enter the updated hotel location: ");
+                        String location=scanner.nextLine();
+                        Hotel updatedHotel=new Hotel();
+                        updatedHotel.setId(hotelId1);
+                        updatedHotel.setName(name);
+                        updatedHotel.setLocation(location);
+                        hotelService.updateHotel(hotelId1,updatedHotel);
+                    }catch (HotelResourceNotFoundException e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 6:
                     exit=true;
@@ -142,13 +159,13 @@ public class HotelManagementSystem {
                     break;
                 case 2:
                     //findRoomById
-                    System.out.println("Enter the room ID to find : ");
+                    System.out.print("Enter the room ID to find : ");
                     Long roomId = scanner.nextLong();
                     roomService.findRoomById(roomId);
                     break;
                 case 3:
                     //deleteRoomById
-                    System.out.println("Enter the room ID to delete: ");
+                    System.out.print("Enter the room ID to delete: ");
                     Long id = scanner.nextLong();
                     roomService.deleteRoomById(id);
                     break;
@@ -190,19 +207,22 @@ public class HotelManagementSystem {
                     break;
                 case 2:
                     //findGuestById
-                    System.out.println("Enter the guest id to find: ");
+                    System.out.print("Enter the guest id to find: ");
                     Long guestId=scanner.nextLong();
+                    guestService.findGuestById(guestId);
                     break;
                 case 3:
                     //deleteGuestById
                     System.out.println("==== Delete Guest By ID ====");
-                    System.out.println("Enter the guest id to delete: ");
+                    System.out.print("Enter the guest id to delete: ");
                     Long id=scanner.nextLong();
                     scanner.nextLine(); // Consume the newline character
+                    guestService.deleteGuestById(id);
                     break;
                 case 4:
                     //findAllGuest
                     System.out.println("==== Find All Guests ====");
+                    guestService.findAllGuest();
                     break;
                 case 5:
                     exit=true;
@@ -213,7 +233,7 @@ public class HotelManagementSystem {
             }
         }
     }
-    private static void displayReservationOperationsMenu(){
+    private static void displayReservationOperationsMenu(ReservationService reservationService){
         System.out.println("ReservationOperationMenu"); //Step 14
         scanner = new Scanner(System.in);  //Step 15
         boolean exit = false;
@@ -232,23 +252,27 @@ public class HotelManagementSystem {
                 case 1:
                     //saveReservation
                     System.out.println("==== Add a new reservation ====");
+                    reservationService.saveReservation();
                     break;
                 case 2:
                     //findReservationById
-                    System.out.println("Enter the reservation id to find");
+                    System.out.print("Enter the reservation id to find");
                     Long reservationId= scanner.nextLong();
                     scanner.nextLine();
+                    reservationService.findReservationById(reservationId);
                     break;
                 case 3:
                     //findAll
                     System.out.println("==== Find All Reservations ====");
+                    reservationService.findAll();
                     break;
                 case 4:
                     //deleteReservationById
                     System.out.println("==== Delete Reservation By ID ====");
-                    System.out.println("Enter the reservation id to delete");
+                    System.out.print("Enter the reservation id to delete");
                     Long id=scanner.nextLong();
                     scanner.nextLine();
+                    reservationService.deleteReservationById(id);
                     break;
                 case 5:
                     exit=true;
@@ -258,18 +282,16 @@ public class HotelManagementSystem {
                     break;
             }
         }
-
     }
-
-
 }
 
 
-// HotelRepository hotelRepostory = new HotelRepositoryImpl();
-// HotelRepository-->interface ,
+
+// HotelRepository hotelRepository = new HotelRepositoryImpl();
+// HotelRepository --> interface ,
 // HotelRepositoryImpl-->interface degil,interface i implemente eden abstract class
-//Interface in methodlarini kullanmak icin obje olustururken interface den degil,implemente eden classtan
-//olustururuz.(Interface tipinde -->HotelRepository olur ama cons olarak interface i implemente eden class i --> HotelRepositoryImpl kullaniriz.
-//interface i implemente eden birden fazla class olabilir.Method lari override ederken kendine ozgu hal aldigi icin
-//kullanmak istedigimiz class i seceriz.
+// Interface in methodlarini kullanmak icin obje olustururken interface den degil,implemente eden classtan
+// olustururuz.(Interface tipinde -->HotelRepository olur ama cons olarak interface i implemente eden class i --> HotelRepositoryImpl kullaniriz.
+// interface i implemente eden birden fazla class olabilir.Method lari override ederken kendine ozgu hal aldigi icin
+// kullanmak istedigimiz class i seceriz.
 

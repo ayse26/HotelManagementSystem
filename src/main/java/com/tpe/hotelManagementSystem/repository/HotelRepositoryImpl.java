@@ -35,7 +35,8 @@ public class HotelRepositoryImpl implements HotelRepository{
     public Hotel findHotelById(Long id) {
 
             Session session=HibernateUtils.getSessionFactory().openSession();
-            return  session.get(Hotel.class,id);                                //sadece okuma islemi yaptigimiz icin transaction baslatmadik
+            return  session.get(Hotel.class,id);                                     //database den sadece bilgi getirme islemi yaptigimiz icin transaction a gerek yok
+                                                                                   //database de degisim olacagi zaman transaction baslatiyoruz
 
     }
 
@@ -44,7 +45,7 @@ public class HotelRepositoryImpl implements HotelRepository{
 
         try(Session session=HibernateUtils.getSessionFactory().openSession()) {
             Transaction transaction= session.beginTransaction();
-            Hotel hotelDelete=session.get(Hotel.class,id);
+            Hotel hotelDelete=session.get(Hotel.class,id);                        //burada yukaridaki methodu da kullanabiliriz
             if (hotelDelete!=null){
                 session.delete(hotelDelete);
                 transaction.commit();
@@ -61,10 +62,38 @@ public class HotelRepositoryImpl implements HotelRepository{
     public List<Hotel> findAllHotels() {
 
         Session session=HibernateUtils.getSessionFactory().openSession();        //burada try icine almadik farkli yollari da gorelim diye
-        String hql = "from Hotel";
         List<Hotel> hotels = session.createQuery("from Hotel", Hotel.class).getResultList();   //  boyle de yazabiliriz
+        //String hql = "from Hotel";
         //List<Hotel> hotels = session.createQuery(hql,Hotel.class).getResultList();
         return hotels;
     }  //burada transaction acmadik cunku find islemlerinde sadece var olani getiriyoruz.session in create query met ile
        //database de kalici degisiklik yaptigimiz islemlerde transaction i kullaniyoruz
+
+
+
+    @Override
+    public void updateHotel(Hotel hotel) {
+        try (Session session=HibernateUtils.getSessionFactory().openSession()){
+            Transaction transaction = session.beginTransaction();
+            Hotel existingHotel=session.get(Hotel.class,hotel.getId());
+            if (existingHotel!=null) {                                 //update ve delete islemlerinde once db de var mı diye kontrol ediyoruz
+                existingHotel.setName(hotel.getName());
+                existingHotel.setLocation(hotel.getLocation());         //service de de yaptik ayni islemi buradada,yoksa update yapmiyor
+
+                session.update(existingHotel);
+
+            }
+            transaction.commit();
+            HibernateUtils.closeSession(session);
+        }catch (HibernateException e){
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+
 }

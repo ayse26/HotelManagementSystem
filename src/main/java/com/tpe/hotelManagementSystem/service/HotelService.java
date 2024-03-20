@@ -13,4 +13,6 @@ public interface HotelService {
     void deleteHotelById(Long id);
 
     List<Hotel> findAllHotels();
+
+    void updateHotel(Long id,Hotel updateHotel);
 }

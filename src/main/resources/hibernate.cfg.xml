@@ -45,6 +45,7 @@
         <mapping class="com.tpe.hotelManagementSystem.domain.Room" />
         <mapping class="com.tpe.hotelManagementSystem.domain.Guest" />
         <mapping class="com.tpe.hotelManagementSystem.domain.Address" />
+        <mapping class="com.tpe.hotelManagementSystem.domain.Reservation" />
 
 
 

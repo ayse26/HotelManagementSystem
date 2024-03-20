@@ -12,4 +12,5 @@ public interface RoomRepository {
     List<Room> findAllRooms();
 
     void deleteRoomByID(Long id);
+
 }
